@@ -5,7 +5,7 @@ from time import sleep
 
 class RotatingDisplay(object):
 
-    SLEEP = 0.05
+    SLEEP = 0.2
 
     def __init__(self, ir_rotation_pin, motor_diraction_pin, leds_driver, graphics):
         self._ir_rotation_pin = ir_rotation_pin

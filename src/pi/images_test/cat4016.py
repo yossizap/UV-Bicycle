@@ -7,10 +7,12 @@ except RuntimeError:
 
 
 class Cat4016(object):
-    def __init__(self, clock_pin, data_pin, latch_pin):
+    def __init__(self, clock_pin, data_pin, latch_pin, groups, led_map):
         self._clock_pin = clock_pin
         self._data_pin = data_pin
         self._latch_pin = latch_pin
+        self._groups = groups
+        self._led_map = led_map
 
     def setup(self):
         GPIO.setwarnings(False)
@@ -22,9 +24,10 @@ class Cat4016(object):
         GPIO.output(gpio_pin, False)
 
     def write(self, buffer):
-        for led in buffer:
-            GPIO.output(self._data_pin, led)
-            self._gpio_pulse(self._clock_pin)
+        for led in self._led_map:
+            GPIO.output(self._data_pin, False if led == -1 else buffer[led])
+            for _ in range(self._groups):
+                self._gpio_pulse(self._clock_pin)
         self._gpio_pulse(self._latch_pin)
 
     def cleanup(self):

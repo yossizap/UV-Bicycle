@@ -8,9 +8,21 @@ from rotating_display import RotatingDisplay
 
 
 class Main(object):
-
-    LED_COUNT = 32
     
+    VERSION = 3
+    if VERSION == 1:
+        LED_COUNT = 32
+        CAT4016_GROUPS = 1
+        CAT4016_LED_MAP = range(LED_COUNT)
+    elif VERSION == 2:
+        LED_COUNT = 10
+        CAT4016_GROUPS = 1
+        CAT4016_LED_MAP = [-1 if i % 2 or i >= LED_COUNT * 2 else i / 2 for i in range(32)]
+    elif VERSION == 3:
+        LED_COUNT = 10
+        CAT4016_GROUPS = 2
+        CAT4016_LED_MAP = [0, -1, 2, 3, -1, 5, 6, 7, 8, 9, 4, 1, -1, -1, -1, -1]
+
     CAT4016_SIN_PIN = 22
     CAT4016_CLOCK_PIN = 27
     CAT4016_LATCH_PIN = 17
@@ -22,7 +34,9 @@ class Main(object):
         self.cat4016 = Cat4016(
             self.CAT4016_CLOCK_PIN,
             self.CAT4016_SIN_PIN,
-            self.CAT4016_LATCH_PIN)
+            self.CAT4016_LATCH_PIN,
+            self.CAT4016_GROUPS,
+            self.CAT4016_LED_MAP)
 
         self.graphics = Graphics(self.LED_COUNT)
 
@@ -33,7 +47,7 @@ class Main(object):
             self.graphics)
 
     def test_draw_images(self):
-        image_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "32_pixels_high")
+        image_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "%s_pixels_high" % (self.LED_COUNT,))
 
         if os.path.isfile(image_path):
             images = [image_path]
@@ -53,9 +67,9 @@ class Main(object):
         self.cat4016.setup()
         
     def cleanup(self):
-        GPIO.cleanup()
         self.rotating_display.off()
         self.cat4016.cleanup()
+        GPIO.cleanup()
 
 if __name__ == "__main__":
     main = Main()
