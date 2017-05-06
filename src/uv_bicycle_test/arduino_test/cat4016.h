@@ -1,7 +1,7 @@
 #ifndef CAT4016_H
 #define CAT4016_H
 
-#include "sbi_cbi.h"
+#include "common.h"
 
 #define CAT4016_PORT			(PORTD)
 #define CAT4016_LATCH_PIN		(4)
