@@ -78,6 +78,18 @@ void graphics_draw_text(uint8_t * text) {
 		graphics_draw_char(*text++);
 }
 
+void graphics_test() {
+	uint32_t led_bitmask = (uint32_t)2 << LEDS_COUNT;
+
+	leds_write(led_bitmask - 1);
+	delay(1000);
+	do {
+		led_bitmask >>= 1;
+		leds_write(led_bitmask);
+		delay(700);
+	} while (led_bitmask);
+}
+
 void graphics_set_font(uint8_t * font) {
 	_font = font;
 	_font_height = fontbyte(FONT_HEIGHT);
